@@ -25,9 +25,13 @@ class App extends Component {
     },
   };
 
+  state = {
+    gallary: null,
+  };
+
   componentDidMount() {
     const { BASE_URL, config } = this;
-    axios.get(BASE_URL, config).then(console.log);
+    axios.get(BASE_URL, config).then(gallary => this.setState({ gallary }));
   }
 
   render() {
@@ -36,6 +40,8 @@ class App extends Component {
         <Container>
           <h2>SearchGallery</h2>
         </Container>
+
+        {this.state.gallary && <h2>Gallery</h2>}
       </>
     );
   }
