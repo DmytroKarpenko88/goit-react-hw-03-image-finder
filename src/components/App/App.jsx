@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-// import axios from 'axios';
 
 import css from './App.module.css';
 import { fetchPhoto } from '../../api/fetch-photo';
 import Searchbar from '../Searchbar/Searchbar';
+import ImageGallery from 'components/ImageGallery/ImageGallery';
+import Loader from 'components/Loader/Loader';
+import Button from 'components/Button/Button';
+
 // import { nanoid } from 'nanoid';
 
 // import PropTypes from 'prop-types';
@@ -33,16 +36,23 @@ class App extends Component {
   //     .finally(() => this.setState({ loading: false }));
   // }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.query !== this.state.query) {
+  async componentDidUpdate(prevProps, prevState) {
+    if (
+      prevState.query !== this.state.query ||
+      prevState.page !== this.state.page
+    ) {
       console.log('Пішов запит');
       this.setState({ loading: true });
 
-      fetchPhoto(this.state.query, this.state.page)
+      await fetchPhoto(this.state.query, this.state.page)
         .then(res => {
+          if (res.hits.length === 0) {
+            alert('No images were found for your request');
+            return;
+          }
           this.setState(() => {
             return {
-              photos: [...res.hits],
+              photos: [...this.state.photos, ...res.hits],
               totalItems: res.total,
             };
           });
@@ -55,32 +65,33 @@ class App extends Component {
   onSubmit = e => {
     e.preventDefault();
     const search = e.currentTarget.elements.search.value;
+    if (!search) {
+      alert('Enter the request');
+      return;
+    }
+    this.setState({ query: search, photos: [] });
 
-    this.setState({ query: search });
-    console.log('this.state.query', this.state.query);
     e.currentTarget.elements.search.value = '';
+  };
+
+  loadMore = () => {
+    this.setState(prevState => {
+      return { page: prevState.page + 1, loading: true };
+    });
   };
 
   render() {
     return (
-      <div>
-        <div className={css.App}>
-          <h2>SearchGallery</h2>
-          <Searchbar onSubmit={this.onSubmit} />
-        </div>
-
-        {this.state.loading && <h1>loading...</h1>}
-        {this.state.photos && <h2>Gallery</h2>}
-
-        <ul>
-          {this.state.photos.map(({ webformatURL, tags }, index) => {
-            return (
-              <li key={index} className="gallery-item">
-                <img src={webformatURL} alt={tags} />
-              </li>
-            );
-          })}
-        </ul>
+      <div className={css.App}>
+        <Searchbar onSubmit={this.onSubmit} />
+        <ImageGallery photos={this.state.photos}></ImageGallery>
+        {this.state.loading && <Loader />}
+        {this.state.totalItems > this.state.page * 12 &&
+          !this.state.loading && (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Button handleClick={this.loadMore} />
+            </div>
+          )}
       </div>
     );
   }
