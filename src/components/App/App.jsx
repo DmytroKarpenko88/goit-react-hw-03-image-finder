@@ -6,6 +6,7 @@ import Searchbar from '../Searchbar/Searchbar';
 import ImageGallery from 'components/ImageGallery/ImageGallery';
 import Loader from 'components/Loader/Loader';
 import Button from 'components/Button/Button';
+import Modal from 'components/Modal/Modal';
 
 // import { nanoid } from 'nanoid';
 
@@ -18,6 +19,11 @@ class App extends Component {
     photos: [],
     totalItems: 0,
     loading: false,
+    isModalShow: false,
+    modalData: {
+      largeImageUrl: '',
+      altName: '',
+    },
   };
 
   // componentDidMount() {
@@ -69,7 +75,7 @@ class App extends Component {
       alert('Enter the request');
       return;
     }
-    this.setState({ query: search, photos: [] });
+    this.setState({ query: search, photos: [], page: 1 });
 
     e.currentTarget.elements.search.value = '';
   };
@@ -80,18 +86,53 @@ class App extends Component {
     });
   };
 
+  // isModalShow = () => {};
+  toggleModalIsSow = () => {
+    this.setState(({ isModalShow }) => ({
+      isModalShow: !isModalShow,
+    }));
+  };
+
+  openModalWindow = newModalData => {
+    if (newModalData.largeImageUrl !== this.state.modalData.largeImageUrl) {
+      this.setState(() => {
+        return {
+          modalData: { ...newModalData },
+        };
+      });
+    }
+    this.toggleModalIsSow();
+  };
+
   render() {
     return (
       <div className={css.App}>
         <Searchbar onSubmit={this.onSubmit} />
-        <ImageGallery photos={this.state.photos}></ImageGallery>
+        <ImageGallery
+          photos={this.state.photos}
+          openModalWindow={this.openModalWindow}
+        ></ImageGallery>
         {this.state.loading && <Loader />}
-        {this.state.totalItems > this.state.page * 12 &&
+        {this.state.photos.length > 0 &&
+          this.state.totalItems > this.state.page * 12 &&
           !this.state.loading && (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <Button handleClick={this.loadMore} />
             </div>
           )}
+        <>
+          {/* ---------Modal window------------- */}
+
+          <button type="button" onClick={this.toggleModal}>
+            Modal
+          </button>
+          {this.state.isModalShow && (
+            <Modal
+              modalData={this.state.modalData}
+              onClose={this.toggleModalIsSow}
+            />
+          )}
+        </>
       </div>
     );
   }

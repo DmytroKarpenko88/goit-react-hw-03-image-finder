@@ -1,14 +1,18 @@
 import PropTypes from 'prop-types';
 import css from './ImageGalleryItem.module.css';
 
-const ImageGalleryItem = ({ webformatURL, tags }) => {
+const ImageGalleryItem = ({ url, tags, largeImageUrl, openModalWindow }) => {
+  const newModalData = {
+    largeImageUrl: largeImageUrl,
+    altName: tags,
+  };
+
   return (
-    <li className={css.ImageGalleryItem}>
-      <img
-        src={webformatURL}
-        alt={tags}
-        className={css.ImageGalleryItemImage}
-      />
+    <li
+      className={css.ImageGalleryItem}
+      onClick={() => openModalWindow(newModalData)}
+    >
+      <img src={url} alt={tags} className={css.ImageGalleryItemImage} />
     </li>
   );
 };
