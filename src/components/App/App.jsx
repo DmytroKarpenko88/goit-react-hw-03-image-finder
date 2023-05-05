@@ -8,8 +8,6 @@ import Loader from 'components/Loader/Loader';
 import Button from 'components/Button/Button';
 import Modal from 'components/Modal/Modal';
 
-// import { nanoid } from 'nanoid';
-
 // import PropTypes from 'prop-types';
 
 class App extends Component {
@@ -86,7 +84,6 @@ class App extends Component {
     });
   };
 
-  // isModalShow = () => {};
   toggleModalIsSow = () => {
     this.setState(({ isModalShow }) => ({
       isModalShow: !isModalShow,
@@ -107,7 +104,12 @@ class App extends Component {
   render() {
     return (
       <div className={css.App}>
+        {/* ---------Searchbar------------- */}
+
         <Searchbar onSubmit={this.onSubmit} />
+
+        {/* ---------Gallery------------- */}
+
         <ImageGallery
           photos={this.state.photos}
           openModalWindow={this.openModalWindow}
@@ -123,9 +125,6 @@ class App extends Component {
         <>
           {/* ---------Modal window------------- */}
 
-          <button type="button" onClick={this.toggleModal}>
-            Modal
-          </button>
           {this.state.isModalShow && (
             <Modal
               modalData={this.state.modalData}

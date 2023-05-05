@@ -1,15 +1,18 @@
 import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
+import PropTypes from 'prop-types';
+
 import css from './ImageGallery.module.css';
 
 const ImageGallery = ({ photos, openModalWindow }) => {
   return (
     <ul className={css.ImageGallery}>
       {/* <!-- Набір <li> із зображеннями --> */}
-      {photos.map(({ webformatURL, tags, largeImageUrl }, index) => {
+      {photos.map(({ webformatURL, tags, largeImageURL, id }, index) => {
         return (
           <ImageGalleryItem
-            key={index}
+            key={id}
             url={webformatURL}
+            largeImageURL={largeImageURL}
             tags={tags}
             openModalWindow={openModalWindow}
           />
@@ -17,6 +20,11 @@ const ImageGallery = ({ photos, openModalWindow }) => {
       })}
     </ul>
   );
+};
+
+ImageGallery.protoTypes = {
+  openModalWindow: PropTypes.func.isRequired,
+  photos: PropTypes.array.isRequired,
 };
 
 export default ImageGallery;

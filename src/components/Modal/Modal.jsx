@@ -1,6 +1,9 @@
-import { createPortal } from 'react-dom';
-import css from './Modal.module.css';
 import { Component } from 'react';
+import { createPortal } from 'react-dom';
+import PropTypes from 'prop-types';
+
+import css from './Modal.module.css';
+import { IoCloseCircleSharp } from 'react-icons/io5';
 
 const modalRoot = document.querySelector('#modal-root');
 
@@ -28,17 +31,18 @@ class Modal extends Component {
   };
 
   render() {
+    const { largeImageUrl, altName } = this.props.modalData;
     return createPortal(
       <div className={css.Overlay} onClick={this.handleBackDrop}>
         <div className={css.Modal}>
-          <div style={{ width: 300, height: 200, backgroundColor: '#fff' }}>
-            <img
-              src={this.props.modalData.largeImageUrl}
-              alt={this.props.modalData.altName}
-            />
-          </div>
-          <button type="button" onClick={this.props.onClose}>
-            close
+          <img src={largeImageUrl} alt={altName} />
+
+          <button
+            type="button"
+            onClick={this.props.onClose}
+            className={css.CloseBtn}
+          >
+            <IoCloseCircleSharp size={32} />
           </button>
         </div>
       </div>,
@@ -46,5 +50,9 @@ class Modal extends Component {
     );
   }
 }
+
+Modal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+};
 
 export default Modal;

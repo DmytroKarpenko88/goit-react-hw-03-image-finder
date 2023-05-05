@@ -16,6 +16,25 @@
 }
 
 .Modal {
+  position: relative;
   max-width: calc(100vw - 48px);
   max-height: calc(100vh - 24px);
+}
+
+.CloseBtn {
+  background-color: rgba(0, 0, 0, 0);
+  filter: drop-shadow(0 0 1em White);
+  border: none;
+  position: absolute;
+  right: 15px;
+  top: 15px;
+}
+
+.CloseBtn:hover,
+.CloseBtn:focus {
+  color: rgb(251, 129, 129);
+}
+
+.CloseBtn:active {
+  color: red;
 }

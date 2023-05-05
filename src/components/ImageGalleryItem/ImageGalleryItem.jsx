@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import css from './ImageGalleryItem.module.css';
 
-const ImageGalleryItem = ({ url, tags, largeImageUrl, openModalWindow }) => {
+const ImageGalleryItem = ({ url, tags, largeImageURL, openModalWindow }) => {
   const newModalData = {
-    largeImageUrl: largeImageUrl,
+    largeImageUrl: largeImageURL,
     altName: tags,
   };
 
@@ -18,8 +18,10 @@ const ImageGalleryItem = ({ url, tags, largeImageUrl, openModalWindow }) => {
 };
 
 ImageGalleryItem.protoType = {
-  webformatURL: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
   tags: PropTypes.string.isRequired,
+  largeImageURL: PropTypes.string.isRequired,
+  openModalWindow: PropTypes.func.isRequired,
 };
 
 export default ImageGalleryItem;
