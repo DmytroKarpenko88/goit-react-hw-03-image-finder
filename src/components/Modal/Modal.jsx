@@ -19,7 +19,6 @@ class Modal extends Component {
 
   handeKeyDowne = e => {
     if (e.code === 'Escape') {
-      console.log('Close modal');
       this.props.onClose();
     }
   };

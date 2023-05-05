@@ -18,7 +18,6 @@ export async function fetchPhoto(searchValue, numberPage = 1) {
 
   try {
     let { data } = await axios.get(`${BASE_URL}`, config);
-    console.log(data);
     return data;
   } catch (error) {
     return error.message;

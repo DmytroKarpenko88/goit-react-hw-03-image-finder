@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 import css from './App.module.css';
 import { fetchPhoto } from '../../api/fetch-photo';
@@ -45,23 +46,23 @@ class App extends Component {
       prevState.query !== this.state.query ||
       prevState.page !== this.state.page
     ) {
-      console.log('Пішов запит');
       this.setState({ loading: true });
 
       await fetchPhoto(this.state.query, this.state.page)
         .then(res => {
           if (res.hits.length === 0) {
-            alert('No images were found for your request');
+            Notify.failure('No images were found for your request');
             return;
           }
           this.setState(() => {
+            Notify.success(`We found ${res.total} images`);
             return {
               photos: [...this.state.photos, ...res.hits],
               totalItems: res.total,
             };
           });
         })
-        .catch(error => console.log('Error'))
+        .catch(error => Notify.failure(error.message))
         .finally(() => this.setState({ loading: false }));
     }
   }
@@ -70,7 +71,7 @@ class App extends Component {
     e.preventDefault();
     const search = e.currentTarget.elements.search.value;
     if (!search) {
-      alert('Enter the request');
+      Notify.failure('Enter the request');
       return;
     }
     this.setState({ query: search, photos: [], page: 1 });
