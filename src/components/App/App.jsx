@@ -41,14 +41,13 @@ class App extends Component {
   //     .finally(() => this.setState({ loading: false }));
   // }
 
-  async componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.query !== this.state.query ||
-      prevState.page !== this.state.page
-    ) {
+  async componentDidUpdate(_, prevState) {
+    const { query, page, photos } = this.state;
+
+    if (prevState.query !== query || prevState.page !== page) {
       this.setState({ loading: true });
 
-      await fetchPhoto(this.state.query, this.state.page)
+      await fetchPhoto(query, page)
         .then(res => {
           if (res.hits.length === 0) {
             Notify.failure('No images were found for your request');
@@ -57,7 +56,7 @@ class App extends Component {
           this.setState(() => {
             Notify.success(`We found ${res.total} images`);
             return {
-              photos: [...this.state.photos, ...res.hits],
+              photos: [...photos, ...res.hits],
               totalItems: res.total,
             };
           });
@@ -103,34 +102,34 @@ class App extends Component {
   };
 
   render() {
+    const { photos, loading, totalItems, page, isModalShow, modalData } =
+      this.state;
+
+    const { onSubmit, openModalWindow, loadMore, toggleModalIsSow } = this;
+
     return (
       <div className={css.App}>
         {/* ---------Searchbar------------- */}
 
-        <Searchbar onSubmit={this.onSubmit} />
+        <Searchbar onSubmit={onSubmit} />
 
         {/* ---------Gallery------------- */}
 
         <ImageGallery
-          photos={this.state.photos}
-          openModalWindow={this.openModalWindow}
+          photos={photos}
+          openModalWindow={openModalWindow}
         ></ImageGallery>
-        {this.state.loading && <Loader />}
-        {this.state.photos.length > 0 &&
-          this.state.totalItems > this.state.page * 12 &&
-          !this.state.loading && (
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <Button handleClick={this.loadMore} />
-            </div>
-          )}
+        {loading && <Loader />}
+        {photos.length > 0 && totalItems > page * 12 && !loading && (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Button handleClick={loadMore} />
+          </div>
+        )}
         <>
           {/* ---------Modal window------------- */}
 
-          {this.state.isModalShow && (
-            <Modal
-              modalData={this.state.modalData}
-              onClose={this.toggleModalIsSow}
-            />
+          {isModalShow && (
+            <Modal modalData={modalData} onClose={toggleModalIsSow} />
           )}
         </>
       </div>

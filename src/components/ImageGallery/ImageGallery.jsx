@@ -7,7 +7,7 @@ const ImageGallery = ({ photos, openModalWindow }) => {
   return (
     <ul className={css.ImageGallery}>
       {/* <!-- Набір <li> із зображеннями --> */}
-      {photos.map(({ webformatURL, tags, largeImageURL, id }, index) => {
+      {photos.map(({ webformatURL, tags, largeImageURL, id }) => {
         return (
           <ImageGalleryItem
             key={id}
