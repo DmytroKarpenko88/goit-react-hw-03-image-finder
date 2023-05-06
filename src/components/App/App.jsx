@@ -41,10 +41,20 @@ class App extends Component {
           if (prevState.totalItems !== res.total) {
             Notify.success(`We found ${res.total} images`);
           }
+          const response = res.hits.map(
+            ({ webformatURL, tags, largeImageURL, id }) => {
+              return {
+                id,
+                webformatURL,
+                tags,
+                largeImageURL,
+              };
+            }
+          );
 
           this.setState(() => {
             return {
-              photos: [...photos, ...res.hits],
+              photos: [...photos, ...response],
               totalItems: res.total,
             };
           });
