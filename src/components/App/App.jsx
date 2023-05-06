@@ -25,22 +25,6 @@ class App extends Component {
     },
   };
 
-  // componentDidMount() {
-  //   this.setState({ loading: true });
-
-  //   fetchPhoto(this.state.query, this.state.page)
-  //     .then(res => {
-  //       this.setState(() => {
-  //         return {
-  //           photos: [...this.state.photos, ...res.hits],
-  //           totalItems: res.total,
-  //         };
-  //       });
-  //     })
-  //     .catch(error => console.log('Error'))
-  //     .finally(() => this.setState({ loading: false }));
-  // }
-
   async componentDidUpdate(_, prevState) {
     const { query, page, photos } = this.state;
 
@@ -53,8 +37,12 @@ class App extends Component {
             Notify.failure('No images were found for your request');
             return;
           }
-          this.setState(() => {
+
+          if (prevState.totalItems !== res.total) {
             Notify.success(`We found ${res.total} images`);
+          }
+
+          this.setState(() => {
             return {
               photos: [...photos, ...res.hits],
               totalItems: res.total,
@@ -66,21 +54,15 @@ class App extends Component {
     }
   }
 
-  onSubmit = e => {
-    e.preventDefault();
-    const search = e.currentTarget.elements.search.value;
-    if (!search) {
-      Notify.failure('Enter the request');
-      return;
+  onSubmit = query => {
+    if (this.state.query !== query) {
+      this.setState({ query, photos: [], page: 1 });
     }
-    this.setState({ query: search, photos: [], page: 1 });
-
-    e.currentTarget.elements.search.value = '';
   };
 
   loadMore = () => {
     this.setState(prevState => {
-      return { page: prevState.page + 1, loading: true };
+      return { page: prevState.page + 1 };
     });
   };
 
@@ -115,10 +97,7 @@ class App extends Component {
 
         {/* ---------Gallery------------- */}
 
-        <ImageGallery
-          photos={photos}
-          openModalWindow={openModalWindow}
-        ></ImageGallery>
+        <ImageGallery photos={photos} openModalWindow={openModalWindow} />
         {loading && <Loader />}
         {photos.length > 0 && totalItems > page * 12 && !loading && (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
